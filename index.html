@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT-DLP-GG | Gerador de Comandos</title>
+    <style>
+        :root {
+            --primary: #ef4444;
+            --primary-hover: #dc2626;
+            --bg-dark: #0f0f0f;
+            --bg-panel: #1e1e1e;
+            --bg-input: #2d2d2d;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --border: #3f3f46;
+            --accent: #3b82f6;
+            --success: #22c55e;
+            --radius: 8px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; padding: 20px; }
+
+        .container {
+            width: 100%; max-width: 850px;
+            background-color: var(--bg-panel);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        /* Header */
+        header { background-color: #27272a; padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .brand { display: flex; align-items: center; gap: 10px; font-size: 1.4rem; font-weight: 800; color: white; letter-spacing: -0.5px; }
+        .badge { font-size: 0.75rem; background: var(--bg-input); padding: 4px 8px; border-radius: 4px; color: var(--text-muted); border: 1px solid var(--border); }
+
+        /* Main */
+        main { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+        section { display: flex; flex-direction: column; gap: 12px; }
+        h2 { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;}
+
+        /* Inputs */
+        .input-group { display: flex; gap: 10px; }
+        input[type="text"], select { flex: 1; background-color: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 12px; border-radius: var(--radius); font-size: 1rem; outline: none; }
+        input[type="text"]:focus, select:focus { border-color: var(--accent); }
+
+        /* Buttons */
+        button { cursor: pointer; padding: 12px 20px; border-radius: var(--radius); border: none; font-weight: 600; transition: 0.2s; }
+        .btn-primary { background-color: var(--accent); color: white; }
+        .btn-primary:hover { background-color: #2563eb; }
+        .btn-secondary { background-color: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-secondary:hover { background-color: #3f3f46; }
+        .btn-icon { background: transparent; padding: 8px; color: var(--text-muted); }
+        .btn-icon:hover { color: var(--text-main); }
+
+        /* Cookie File Input */
+        .file-upload-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #cookieInput { display: none; }
+        .file-upload-btn {
+            background-color: var(--bg-input);
+            border: 1px dashed var(--border);
+            color: var(--text-muted);
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .file-upload-btn:hover { border-color: var(--text-muted); background-color: #333; }
+        .file-upload-btn.active { border-color: var(--success); color: var(--success); background-color: rgba(34, 197, 94, 0.1); border-style: solid; }
+        .file-name-display { font-size: 0.9rem; color: var(--success); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+
+        /* Grid & Toggles */
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .control-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 0.9rem; color: var(--text-muted); }
+        
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; background: var(--bg-input); padding: 10px 14px; border-radius: var(--radius); }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #52525b; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .tab { background: none; border: none; color: var(--text-muted); padding: 8px 16px; border-radius: 4px; }
+        .tab.active { background: var(--bg-input); color: var(--text-main); }
+        .hidden { display: none; }
+
+        /* Output */
+        .output-container { background-color: #000; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; font-family: monospace; position: relative; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); color: white; border: none; padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; }
+        .copy-btn:hover { background: rgba(255,255,255,0.2); }
+        .command-display { color: #22c55e; word-break: break-all; line-height: 1.5; font-size: 0.95rem; white-space: pre-wrap; }
+
+        /* Toast & Modal */
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background-color: var(--success); color: white; padding: 12px 24px; border-radius: 50px; font-weight: 600; transition: 0.3s; z-index: 1000; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-content { background: var(--bg-panel); width: 90%; max-width: 500px; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border); color: var(--text-main); }
+        .modal h3 { margin-bottom: 12px; color: var(--accent); }
+        .modal p, .modal li { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 10px; }
+        .modal ul { padding-left: 20px; }
+        .modal a { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="brand">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="color: var(--primary);">
+                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+            </svg>
+            YT-DLP-GG
+        </div>
+        <div class="badge">v3.1 Anti-Nsig</div>
+    </header>
+
+    <main>
+        <!-- URL Input -->
+        <section>
+            <h2>Fonte (URL)</h2>
+            <div class="input-group">
+                <input type="text" id="urlInput" placeholder="Cole o link do YouTube..." autocomplete="off">
+                <button class="btn-secondary" id="pasteBtn" title="Colar">📋</button>
+            </div>
+        </section>
+
+        <!-- NEW: Cookies Section -->
+        <section style="background: rgba(59, 130, 246, 0.05); padding: 15px; border: 1px solid rgba(59, 130, 246, 0.2); border-radius: var(--radius);">
+            <h2>
+                Autenticação (Cookies)
+                <button class="btn-icon" onclick="showCookieHelp()" title="Como obter cookies?">❓</button>
+            </h2>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">
+                Necessário para contornar bloqueios do YouTube (SARS) e vídeos com restrição de idade.
+            </div>
+            <div class="file-upload-wrapper">
+                <input type="file" id="cookieInput" accept=".txt">
+                <label for="cookieInput" class="file-upload-btn" id="cookieLabel">
+                    Clique para selecionar 'cookies.txt'
+                </label>
+                <span class="file-name-display" id="cookieFileName"></span>
+            </div>
+        </section>
+
+        <!-- Mode Selection -->
+        <section>
+            <h2>Modo de Download</h2>
+            <div class="tabs">
+                <button class="tab active" onclick="setMode('video')">Vídeo</button>
+                <button class="tab" onclick="setMode('audio')">Áudio</button>
+                <button class="tab" onclick="setMode('playlist')">Playlist</button>
+            </div>
+
+            <!-- Video Options -->
+            <div id="videoOptions" class="options-grid">
+                <div class="control-group">
+                    <label>Formato</label>
+                    <select id="videoFormat">
+                        <option value="mp4">MP4 (Geral)</option>
+                        <option value="mkv">MKV (Melhor Qualidade)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Qualidade</label>
+                    <select id="videoQuality">
+                        <option value="best">Melhor (1080p/4K)</option>
+                        <option value="1080">1080p</option>
+                        <option value="720">720p</option>
+                        <option value="worst">Pior</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Legendas</label>
+                    <select id="subtitleSelect">
+                        <option value="none">Não baixar</option>
+                        <option value="srt">Baixar .srt</option>
+                        <option value="embed">Embutir</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Audio Options -->
+            <div id="audioOptions" class="options-grid hidden">
+                <div class="control-group">
+                    <label>Formato</label>
+                    <select id="audioFormat">
+                        <option value="mp3">MP3</option>
+                        <option value="m4a">M4A</option>
+                        <option value="wav">WAV</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Qualidade</label>
+                    <select id="audioQuality">
+                        <option value="320">320kbps</option>
+                        <option value="192">192kbps</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Playlist Options -->
+            <div id="playlistOptions" class="options-grid hidden">
+                <div class="control-group">
+                    <label>Itens</label>
+                    <select id="playlistRange">
+                        <option value="all">Todos</option>
+                        <option value="first5">Primeiros 5</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Formato</label>
+                    <select id="playlistFormat">
+                        <option value="mp4">MP4</option>
+                        <option value="mp3">MP3</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advanced -->
+        <section>
+            <h2>Opções Avançadas</h2>
+            <div class="options-grid">
+                <div class="toggle-row" onclick="document.getElementById('embedMeta').click()">
+                    <span>Inserir Metadados</span>
+                    <label class="switch"><input type="checkbox" id="embedMeta" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row" onclick="document.getElementById('restrictFilenames').click()">
+                    <span>Nomes de Arquivo ASCII</span>
+                    <label class="switch"><input type="checkbox" id="restrictFilenames"><span class="slider"></span></label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Output -->
+        <section>
+            <h2>Comando Final</h2>
+            <div class="output-container">
+                <button class="copy-btn" onclick="copyCommand()">Copiar Comando</button>
+                <div class="command-display" id="outputCommand">yt-dlp ...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="background:#27272a; padding:15px; text-align:center; font-size:0.8rem; color:var(--text-muted); border-top:1px solid var(--border);">
+        Use cookies apenas em contas suas. A responsabilidade é do usuário.
+    </footer>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast">
+    <span id="toastMsg">Sucesso!</span>
+</div>
+
+<!-- Cookie Help Modal -->
+<div id="cookieModal" class="modal">
+    <div class="modal-content">
+        <h3>Como contornar o bloqueio (SARS)</h3>
+        <p>O YouTube agora exige login para muitas conexões de download. Para contornar, você precisa exportar os cookies do seu navegador logado:</p>
+        <ol style="color:var(--text-muted); padding-left:20px; line-height:1.6;">
+            <li>Instale a extensão <strong>"Get cookies.txt LOCALLY"</strong> no Chrome/Firefox.</li>
+            <li>Vá para o YouTube e faça login na conta que você quer usar.</li>
+            <li>Clique no ícone da extensão e em <strong>"Export"</strong> / "Current Domain".</li>
+            <li>Salve o arquivo <strong>cookies.txt</strong> no seu computador.</li>
+            <li>No botão acima ("Clique para selecionar"), escolha esse arquivo.</li>
+        </ol>
+        <p style="font-size:0.85rem; color:var(--primary);">⚠️ Nunca compartilhe seu arquivo cookies.txt, pois ele dá acesso à sua conta.</p>
+        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="document.getElementById('cookieModal').style.display='none'">Entendi</button>
+    </div>
+</div>
+
+<script>
+    let currentMode = 'video';
+    let cookieFilePath = '';
+
+    // Cookie Handling
+    const cookieInput = document.getElementById('cookieInput');
+    const cookieLabel = document.getElementById('cookieLabel');
+    const cookieFileName = document.getElementById('cookieFileName');
+
+    cookieInput.addEventListener('change', function(e) {
+        if (this.files && this.files.length > 0) {
+            const file = this.files[0];
+            cookieFilePath = `"${file.name}"`; 
+            
+            cookieLabel.classList.add('active');
+            cookieLabel.textContent = "Arquivo carregado!";
+            cookieFileName.textContent = file.name;
+            
+            showToast(`Cookies de ${file.name} carregados`);
+            updateCommand();
+        }
+    });
+
+    // Core Logic
+    function updateCommand() {
+        let cmd = 'yt-dlp';
+        const url = urlInput.value.trim() ? `"${urlInput.value.trim()}"` : '"[URL]"';
+
+        // 1. Add Cookies if present
+        if (cookieFilePath) {
+            cmd += ` --cookies ${cookieFilePath}`;
+        }
+
+        // 2. Add Mode Specific Flags
+        if (currentMode === 'video') {
+            const qual = document.getElementById('videoQuality').value;
+            const fmt = document.getElementById('videoFormat').value;
+            const subs = document.getElementById('subtitleSelect').value;
+
+            let formatStr = '';
+            if (qual === 'best') formatStr = 'bestvideo+bestaudio/best';
+            else if (qual === 'worst') formatStr = 'worst';
+            else formatStr = `bestvideo[height<=${qual}]+bestaudio/best[height<=${qual}]`;
+
+            cmd += ` -f "${formatStr}"`;
+            if (fmt === 'mp4') cmd += ' --merge-output-format mp4';
+            if (fmt === 'mkv') cmd += ' --merge-output-format mkv';
+            
+            if (subs === 'srt') cmd += ' --write-subs --sub-langs all';
+            if (subs === 'embed') cmd += ' --embed-subs';
+
+        } else if (currentMode === 'audio') {
+            const fmt = document.getElementById('audioFormat').value;
+            const qual = document.getElementById('audioQuality').value;
+            cmd += ` -x --audio-format ${fmt} --audio-quality ${qual}K`;
+
+        } else if (currentMode === 'playlist') {
+            const range = document.getElementById('playlistRange').value;
+            const fmt = document.getElementById('playlistFormat').value;
+            
+            if (range === 'first5') cmd += ' --playlist-items 1-5';
+            if (fmt === 'mp3') cmd += ' -x --audio-format mp3';
+            else cmd += ' -f mp4';
+            
+            cmd += ' -o "%(playlist_index)s - %(title)s.%(ext)s"';
+        }
+
+        // 3. Advanced Flags
+        if (document.getElementById('embedMeta').checked) cmd += ' --add-metadata';
+        if (document.getElementById('restrictFilenames').checked) cmd += ' --restrict-filenames';
+
+        // 4. Output Template
+        if (currentMode !== 'playlist') cmd += ' -o "%(title)s.%(ext)s"';
+
+        document.getElementById('outputCommand').textContent = cmd + ' ' + url;
+    }
+
+    // UI Logic
+    function setMode(mode) {
+        currentMode = mode;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        ['videoOptions', 'audioOptions', 'playlistOptions'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        document.getElementById(mode + 'Options').classList.remove('hidden');
+        updateCommand();
+    }
+
+    document.getElementById('urlInput').addEventListener('input', updateCommand);
+    document.querySelectorAll('select, input[type=checkbox]').forEach(el => {
+        el.addEventListener('change', updateCommand);
+    });
+
+    function copyCommand() {
+        navigator.clipboard.writeText(document.getElementById('outputCommand').textContent).then(() => {
+            showToast('Comando copiado!');
+        });
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function showCookieHelp() {
+        document.getElementById('cookieModal').style.display = 'flex';
+    }
+</script>
+
+</body>
+</html>
