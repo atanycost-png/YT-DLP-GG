@@ -38,7 +38,7 @@ Baixe vídeos do YouTube, Vimeo e **mais de 1000 sites** com facilidade, sem pre
 ### Passo 1: Clone ou Baixe o Projeto
 
 ```bash
-git clone https://github.com/SEU_USUARIO/YT-DLP-GG.git
+git clone https://github.com/atanycost-png/YT-DLP-GG.git
 cd YT-DLP-GG
 ```
 
@@ -56,7 +56,7 @@ pip install -r requirements.txt
 
 1. Execute o arquivo principal:
    ```bash
-   python main.py
+   python YT-DLP-GG.py
    ```
 
 2. Cole a URL do vídeo no campo de texto.
