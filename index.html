@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YT-DLP-GG | Gerador de Comandos</title>
+    <title>YT-DLP-GG v1.0 | Gerador de Comandos</title>
     <style>
         :root {
             --primary: #ef4444;
@@ -15,6 +15,7 @@
             --text-muted: #a1a1aa;
             --border: #3f3f46;
             --accent: #3b82f6;
+            --accent-dark: #1d4ed8;
             --success: #22c55e;
             --radius: 8px;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -31,7 +32,50 @@
             border: 1px solid var(--border);
             overflow: hidden;
             display: flex; flex-direction: column;
+            position: relative;
         }
+
+        /* --- NOVO BANNER DE AVISO --- */
+        .promo-banner {
+            background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--accent-dark);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .promo-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .promo-btn {
+            background-color: var(--bg-dark);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 6px 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .promo-btn:hover {
+            background-color: var(--bg-panel);
+            transform: translateY(-1px);
+        }
+        /* -------------------------- */
 
         /* Header */
         header { background-color: #27272a; padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
@@ -120,6 +164,26 @@
 <body>
 
 <div class="container">
+    
+    <!-- BANNER DE PROMOÇÃO DA VERSÃO DESKTOP -->
+    <div class="promo-banner">
+        <div class="promo-text">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Prefere não usar o terminal? Baixe a versão Desktop completa!
+        </div>
+        <!-- Substitua o link abaixo pelo link da sua Release no GitHub -->
+        <a href="#" id="releaseLink" class="promo-btn" target="_blank">
+            Baixar v1.0 .EXE
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </a>
+    </div>
+
     <header>
         <div class="brand">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="color: var(--primary);">
@@ -127,7 +191,7 @@
             </svg>
             YT-DLP-GG
         </div>
-        <div class="badge">v3.1 Anti-Nsig</div>
+        <div class="badge">v1.0 Stable</div>
     </header>
 
     <main>
@@ -140,7 +204,7 @@
             </div>
         </section>
 
-        <!-- NEW: Cookies Section -->
+        <!-- Cookies Section -->
         <section style="background: rgba(59, 130, 246, 0.05); padding: 15px; border: 1px solid rgba(59, 130, 246, 0.2); border-radius: var(--radius);">
             <h2>
                 Autenticação (Cookies)
@@ -242,7 +306,7 @@
                     <label class="switch"><input type="checkbox" id="embedMeta" checked><span class="slider"></span></label>
                 </div>
                 <div class="toggle-row" onclick="document.getElementById('restrictFilenames').click()">
-                    <span>Nomes de Arquivo ASCII</span>
+                    <span title="CUIDADO: Isso substitui espaços por underline (_)">Nomes de Arquivo ASCII (Seguro)</span>
                     <label class="switch"><input type="checkbox" id="restrictFilenames"><span class="slider"></span></label>
                 </div>
             </div>
@@ -259,7 +323,7 @@
     </main>
 
     <footer style="background:#27272a; padding:15px; text-align:center; font-size:0.8rem; color:var(--text-muted); border-top:1px solid var(--border);">
-        Use cookies apenas em contas suas. A responsabilidade é do usuário.
+        Dica: Deixe a opção "ASCII" desmarcada para manter espaços e acentos nos nomes.
     </footer>
 </div>
 
@@ -286,6 +350,13 @@
 </div>
 
 <script>
+    // --- CONFIGURAÇÃO DO LINK DE RELEASE ---
+    // ALTERE AQUI PARA O SEU LINK DO GITHUB
+    const GITHUB_RELEASES_URL = "https://github.com/atanycost-png/YT-DLP-GG/releases";
+    
+    document.getElementById('releaseLink').href = GITHUB_RELEASES_URL;
+    // --------------------------------------
+
     let currentMode = 'video';
     let cookieFilePath = '';
 
@@ -318,7 +389,16 @@
             cmd += ` --cookies ${cookieFilePath}`;
         }
 
-        // 2. Add Mode Specific Flags
+        // 2. CORREÇÃO DE NOMES
+        const restrictFilenames = document.getElementById('restrictFilenames').checked;
+        
+        if (!restrictFilenames) {
+            cmd += ' --no-clean-info'; 
+        } else {
+            cmd += ' --restrict-filenames';
+        }
+
+        // 3. Add Mode Specific Flags
         if (currentMode === 'video') {
             const qual = document.getElementById('videoQuality').value;
             const fmt = document.getElementById('videoFormat').value;
@@ -352,11 +432,10 @@
             cmd += ' -o "%(playlist_index)s - %(title)s.%(ext)s"';
         }
 
-        // 3. Advanced Flags
+        // 4. Advanced Flags
         if (document.getElementById('embedMeta').checked) cmd += ' --add-metadata';
-        if (document.getElementById('restrictFilenames').checked) cmd += ' --restrict-filenames';
 
-        // 4. Output Template
+        // 5. Output Template
         if (currentMode !== 'playlist') cmd += ' -o "%(title)s.%(ext)s"';
 
         document.getElementById('outputCommand').textContent = cmd + ' ' + url;
@@ -390,7 +469,7 @@
         const t = document.getElementById('toast');
         document.getElementById('toastMsg').textContent = msg;
         t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
+        setTimeout(() => t.classList.remove('show'), 2000);
     }
 
     function showCookieHelp() {
