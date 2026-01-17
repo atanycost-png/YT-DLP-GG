@@ -4,191 +4,577 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YT-DLP-GG v1.0 | Gerador de Comandos</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --primary: #ef4444;
-            --primary-hover: #dc2626;
-            --bg-dark: #0f0f0f;
-            --bg-panel: #1e1e1e;
-            --bg-input: #2d2d2d;
-            --text-main: #ffffff;
+            --primary: #ff4e4e;
+            --primary-hover: #ff3535;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --success: #10b981;
+            --bg-dark: #09090b;
+            --bg-card: #121216;
+            --bg-input: #1c1c21;
+            --border: #27272a;
+            --border-hover: #3f3f46;
+            --text-main: #fafafa;
             --text-muted: #a1a1aa;
-            --border: #3f3f46;
-            --accent: #3b82f6;
-            --accent-dark: #1d4ed8;
-            --success: #22c55e;
-            --radius: 8px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --text-inverse: #09090b;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; padding: 20px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(255, 78, 78, 0.1) 0px, transparent 50%);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
 
         .container {
-            width: 100%; max-width: 850px;
-            background-color: var(--bg-panel);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
             border: 1px solid var(--border);
             overflow: hidden;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- PROMO BANNER --- */
+        .promo-banner {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .promo-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .promo-btn {
+            background-color: white;
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            white-space: nowrap;
+        }
+
+        .promo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            background-color: #f8fafc;
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 32px 32px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .brand i { color: var(--primary); }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        /* --- MAIN CONTENT --- */
+        main {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* --- INPUTS & CONTROLS --- */
+        .input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-field-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: var(--accent);
+            background-color: #1e1e26;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* --- BUTTONS --- */
+        button {
+            cursor: pointer;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background-color: var(--accent); color: white; }
+        .btn-primary:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-secondary {
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { background-color: var(--border); border-color: var(--text-muted); }
+
+        .btn-ghost {
+            background: transparent;
+            padding: 6px;
+            color: var(--text-muted);
+            border-radius: 50%;
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
+
+        /* --- COOKIE SECTION --- */
+        .auth-card {
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.03) 0%, rgba(99, 102, 241, 0) 100%);
+            padding: 24px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: var(--radius-lg);
+        }
+
+        .file-upload-wrapper {
+            margin-top: 16px;
             position: relative;
         }
 
-        /* --- NOVO BANNER DE AVISO --- */
-        .promo-banner {
-            background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
+        #cookieInput { display: none; }
+
+        .file-upload-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 2px dashed var(--border);
+            color: var(--text-muted);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .file-upload-btn:hover {
+            border-color: var(--accent);
+            background-color: rgba(99, 102, 241, 0.05);
+            color: var(--text-main);
+        }
+
+        .file-upload-btn.active {
+            border-color: var(--success);
+            color: var(--success);
+            background-color: rgba(16, 185, 129, 0.05);
+            border-style: solid;
+        }
+
+        .file-name-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: var(--success);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .file-name-info.show { opacity: 1; transform: translateY(0); }
+
+        /* --- OPTIONS GRID --- */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* --- TABS --- */
+        .tabs-container {
+            background: var(--bg-input);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            display: flex;
+            gap: 4px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: transparent;
+        }
+
+        .tab.active {
+            background-color: var(--bg-card);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab-content {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hidden { display: none; }
+
+        /* --- SWITCHES --- */
+        .toggle-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-input);
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .toggle-card:hover { border-color: var(--border-hover); background-color: #23232a; }
+
+        .toggle-info { display: flex; flex-direction: column; gap: 2px; }
+        .toggle-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+        .toggle-desc { font-size: 0.8rem; color: var(--text-muted); }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #3f3f46;
+            transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            box-shadow: var(--shadow-sm);
+        }
+
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* --- OUTPUT SECTION --- */
+        .output-container {
+            background-color: #000;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .output-header {
+            background-color: #121216;
             padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--accent-dark);
-            flex-wrap: wrap;
-            gap: 10px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .promo-text {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: white;
+        .output-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .promo-btn {
-            background-color: var(--bg-dark);
+        .copy-btn {
+            background: var(--accent);
             color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 6px 14px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: bold;
-            transition: 0.2s;
-            display: flex;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .copy-btn:hover { background: var(--accent-hover); }
+
+        .command-display {
+            padding: 24px;
+            color: #10b981;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            word-break: break-all;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            min-height: 80px;
+        }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .promo-btn:hover {
-            background-color: var(--bg-panel);
-            transform: translateY(-1px);
+        .modal-content {
+            background: var(--bg-card);
+            width: 100%;
+            max-width: 500px;
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            box-shadow: var(--shadow-lg);
+            animation: modalScale 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        /* -------------------------- */
 
-        /* Header */
-        header { background-color: #27272a; padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-        .brand { display: flex; align-items: center; gap: 10px; font-size: 1.4rem; font-weight: 800; color: white; letter-spacing: -0.5px; }
-        .badge { font-size: 0.75rem; background: var(--bg-input); padding: 4px 8px; border-radius: 4px; color: var(--text-muted); border: 1px solid var(--border); }
+        @keyframes modalScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
 
-        /* Main */
-        main { padding: 24px; display: flex; flex-direction: column; gap: 24px; }
-        section { display: flex; flex-direction: column; gap: 12px; }
-        h2 { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;}
+        .modal h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: white;
+        }
 
-        /* Inputs */
-        .input-group { display: flex; gap: 10px; }
-        input[type="text"], select { flex: 1; background-color: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 12px; border-radius: var(--radius); font-size: 1rem; outline: none; }
-        input[type="text"]:focus, select:focus { border-color: var(--accent); }
+        .modal p, .modal li { color: var(--text-muted); line-height: 1.7; font-size: 0.95rem; margin-bottom: 12px; }
+        .modal ol { padding-left: 20px; margin-bottom: 20px; }
+        .modal strong { color: var(--text-main); }
+        .modal a { color: var(--accent); text-decoration: none; font-weight: 600; }
+        .modal a:hover { text-decoration: underline; }
 
-        /* Buttons */
-        button { cursor: pointer; padding: 12px 20px; border-radius: var(--radius); border: none; font-weight: 600; transition: 0.2s; }
-        .btn-primary { background-color: var(--accent); color: white; }
-        .btn-primary:hover { background-color: #2563eb; }
-        .btn-secondary { background-color: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); }
-        .btn-secondary:hover { background-color: #3f3f46; }
-        .btn-icon { background: transparent; padding: 8px; color: var(--text-muted); }
-        .btn-icon:hover { color: var(--text-main); }
-
-        /* Cookie File Input */
-        .file-upload-wrapper {
-            position: relative;
+        /* --- TOAST --- */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 3000;
             display: flex;
             align-items: center;
             gap: 10px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.2);
         }
-        #cookieInput { display: none; }
-        .file-upload-btn {
-            background-color: var(--bg-input);
-            border: 1px dashed var(--border);
-            color: var(--text-muted);
-            flex: 1;
-            padding: 12px;
-            border-radius: var(--radius);
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .file-upload-btn:hover { border-color: var(--text-muted); background-color: #333; }
-        .file-upload-btn.active { border-color: var(--success); color: var(--success); background-color: rgba(34, 197, 94, 0.1); border-style: solid; }
-        .file-name-display { font-size: 0.9rem; color: var(--success); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
 
-        /* Grid & Toggles */
-        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-        .control-group { display: flex; flex-direction: column; gap: 6px; }
-        label { font-size: 0.9rem; color: var(--text-muted); }
-        
-        .toggle-row { display: flex; align-items: center; justify-content: space-between; background: var(--bg-input); padding: 10px 14px; border-radius: var(--radius); }
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #52525b; transition: .4s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--success); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        /* Tabs */
-        .tabs { display: flex; gap: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .tab { background: none; border: none; color: var(--text-muted); padding: 8px 16px; border-radius: 4px; }
-        .tab.active { background: var(--bg-input); color: var(--text-main); }
-        .hidden { display: none; }
-
-        /* Output */
-        .output-container { background-color: #000; border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; font-family: monospace; position: relative; }
-        .copy-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); color: white; border: none; padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; }
-        .copy-btn:hover { background: rgba(255,255,255,0.2); }
-        .command-display { color: #22c55e; word-break: break-all; line-height: 1.5; font-size: 0.95rem; white-space: pre-wrap; }
-
-        /* Toast & Modal */
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background-color: var(--success); color: white; padding: 12px 24px; border-radius: 50px; font-weight: 600; transition: 0.3s; z-index: 1000; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-content { background: var(--bg-panel); width: 90%; max-width: 500px; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border); color: var(--text-main); }
-        .modal h3 { margin-bottom: 12px; color: var(--accent); }
-        .modal p, .modal li { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 10px; }
-        .modal ul { padding-left: 20px; }
-        .modal a { color: var(--accent); }
+        /* --- FOOTER --- */
+        footer {
+            padding: 24px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-tips { font-style: italic; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 640px) {
+            body { padding: 0; }
+            .container { border-radius: 0; border: none; }
+            header, main, footer { padding: 24px; }
+            .promo-banner { padding: 12px 20px; border-radius: 0; }
+            .options-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    
-    <!-- BANNER DE PROMOÇÃO DA VERSÃO DESKTOP -->
+
+    <!-- PROMO BANNER -->
     <div class="promo-banner">
         <div class="promo-text">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            Prefere não usar o terminal? Baixe a versão Desktop completa!
+            <i data-lucide="monitor"></i>
+            <span>Prefere uma interface desktop? Baixe a versão completa!</span>
         </div>
-        <!-- Substitua o link abaixo pelo link da sua Release no GitHub -->
         <a href="#" id="releaseLink" class="promo-btn" target="_blank">
-            Baixar v1.0 .EXE
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
+            Baixar .EXE
+            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
         </a>
     </div>
 
     <header>
         <div class="brand">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="color: var(--primary);">
-                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-            </svg>
+            <i data-lucide="youtube" style="width: 32px; height: 32px;"></i>
             YT-DLP-GG
         </div>
         <div class="badge">v1.0 Stable</div>
@@ -197,72 +583,82 @@
     <main>
         <!-- URL Input -->
         <section>
-            <h2>Fonte (URL)</h2>
+            <h2>Fonte do Vídeo</h2>
             <div class="input-group">
-                <input type="text" id="urlInput" placeholder="Cole o link do YouTube..." autocomplete="off">
-                <button class="btn-secondary" id="pasteBtn" title="Colar">📋</button>
+                <div class="input-field-wrapper">
+                    <input type="text" id="urlInput" placeholder="Cole o link do YouTube aqui..." autocomplete="off">
+                </div>
+                <button class="btn-secondary" id="pasteBtn" title="Colar">
+                    <i data-lucide="clipboard" style="width: 18px; height: 18px;"></i>
+                </button>
             </div>
         </section>
 
         <!-- Cookies Section -->
-        <section style="background: rgba(59, 130, 246, 0.05); padding: 15px; border: 1px solid rgba(59, 130, 246, 0.2); border-radius: var(--radius);">
+        <section class="auth-card">
             <h2>
                 Autenticação (Cookies)
-                <button class="btn-icon" onclick="showCookieHelp()" title="Como obter cookies?">❓</button>
+                <button class="btn-ghost" onclick="showCookieHelp()" title="Como obter cookies?">
+                    <i data-lucide="help-circle" style="width: 18px; height: 18px;"></i>
+                </button>
             </h2>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">
-                Necessário para contornar bloqueios do YouTube (SARS) e vídeos com restrição de idade.
-            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">
+                Necessário para vídeos privados ou com restrição de idade.
+            </p>
             <div class="file-upload-wrapper">
                 <input type="file" id="cookieInput" accept=".txt">
                 <label for="cookieInput" class="file-upload-btn" id="cookieLabel">
-                    Clique para selecionar 'cookies.txt'
+                    <i data-lucide="file-up" id="cookieIcon"></i>
+                    <span>Clique ou arraste o 'cookies.txt'</span>
                 </label>
-                <span class="file-name-display" id="cookieFileName"></span>
+                <div class="file-name-info" id="fileNameInfo">
+                    <i data-lucide="check-circle-2" style="width: 14px; height: 14px;"></i>
+                    <span id="cookieFileName"></span>
+                </div>
             </div>
         </section>
 
         <!-- Mode Selection -->
         <section>
             <h2>Modo de Download</h2>
-            <div class="tabs">
-                <button class="tab active" onclick="setMode('video')">Vídeo</button>
-                <button class="tab" onclick="setMode('audio')">Áudio</button>
-                <button class="tab" onclick="setMode('playlist')">Playlist</button>
+            <div class="tabs-container">
+                <button class="tab active" onclick="setMode('video', event)">Vídeo</button>
+                <button class="tab" onclick="setMode('audio', event)">Áudio</button>
+                <button class="tab" onclick="setMode('playlist', event)">Playlist</button>
             </div>
 
             <!-- Video Options -->
-            <div id="videoOptions" class="options-grid">
+            <div id="videoOptions" class="tab-content options-grid">
                 <div class="control-group">
-                    <label>Formato</label>
+                    <label>Formato de Saída</label>
                     <select id="videoFormat">
-                        <option value="mp4">MP4 (Geral)</option>
+                        <option value="mp4">MP4 (Padrão)</option>
                         <option value="mkv">MKV (Melhor Qualidade)</option>
                     </select>
                 </div>
                 <div class="control-group">
-                    <label>Qualidade</label>
+                    <label>Resolução Máxima</label>
                     <select id="videoQuality">
-                        <option value="best">Melhor (1080p/4K)</option>
-                        <option value="1080">1080p</option>
-                        <option value="720">720p</option>
-                        <option value="worst">Pior</option>
+                        <option value="best">Melhor Disponível</option>
+                        <option value="1080">1080p (Full HD)</option>
+                        <option value="720">720p (HD)</option>
+                        <option value="worst">Mínima (Economia)</option>
                     </select>
                 </div>
                 <div class="control-group">
                     <label>Legendas</label>
                     <select id="subtitleSelect">
-                        <option value="none">Não baixar</option>
-                        <option value="srt">Baixar .srt</option>
-                        <option value="embed">Embutir</option>
+                        <option value="none">Nenhuma</option>
+                        <option value="srt">Baixar em .srt</option>
+                        <option value="embed">Embutir no Vídeo</option>
                     </select>
                 </div>
             </div>
 
             <!-- Audio Options -->
-            <div id="audioOptions" class="options-grid hidden">
+            <div id="audioOptions" class="tab-content options-grid hidden">
                 <div class="control-group">
-                    <label>Formato</label>
+                    <label>Formato de Áudio</label>
                     <select id="audioFormat">
                         <option value="mp3">MP3</option>
                         <option value="m4a">M4A</option>
@@ -270,25 +666,25 @@
                     </select>
                 </div>
                 <div class="control-group">
-                    <label>Qualidade</label>
+                    <label>Qualidade (Bitrate)</label>
                     <select id="audioQuality">
-                        <option value="320">320kbps</option>
-                        <option value="192">192kbps</option>
+                        <option value="320">320kbps (Alta)</option>
+                        <option value="192">192kbps (Média)</option>
                     </select>
                 </div>
             </div>
 
             <!-- Playlist Options -->
-            <div id="playlistOptions" class="options-grid hidden">
+            <div id="playlistOptions" class="tab-content options-grid hidden">
                 <div class="control-group">
-                    <label>Itens</label>
+                    <label>Intervalo</label>
                     <select id="playlistRange">
-                        <option value="all">Todos</option>
-                        <option value="first5">Primeiros 5</option>
+                        <option value="all">Baixar Tudo</option>
+                        <option value="first5">Primeiros 5 vídeos</option>
                     </select>
                 </div>
                 <div class="control-group">
-                    <label>Formato</label>
+                    <label>Formato Preferencial</label>
                     <select id="playlistFormat">
                         <option value="mp4">MP4</option>
                         <option value="mp3">MP3</option>
@@ -301,79 +697,111 @@
         <section>
             <h2>Opções Avançadas</h2>
             <div class="options-grid">
-                <div class="toggle-row" onclick="document.getElementById('embedMeta').click()">
-                    <span>Inserir Metadados</span>
-                    <label class="switch"><input type="checkbox" id="embedMeta" checked><span class="slider"></span></label>
-                </div>
-                <div class="toggle-row" onclick="document.getElementById('restrictFilenames').click()">
-                    <span title="CUIDADO: Isso substitui espaços por underline (_)">Nomes de Arquivo ASCII (Seguro)</span>
-                    <label class="switch"><input type="checkbox" id="restrictFilenames"><span class="slider"></span></label>
-                </div>
+                <label class="toggle-card" for="embedMeta">
+                    <div class="toggle-info">
+                        <span class="toggle-title">Incluir Metadados</span>
+                        <span class="toggle-desc">Título, capa e tags no arquivo</span>
+                    </div>
+                    <div class="switch">
+                        <input type="checkbox" id="embedMeta" checked>
+                        <span class="slider"></span>
+                    </div>
+                </label>
+                <label class="toggle-card" for="restrictFilenames">
+                    <div class="toggle-info" title="Substitui espaços por underline (_)">
+                        <span class="toggle-title">Compatibilidade (ASCII)</span>
+                        <span class="toggle-desc">Evita problemas com caracteres</span>
+                    </div>
+                    <div class="switch">
+                        <input type="checkbox" id="restrictFilenames">
+                        <span class="slider"></span>
+                    </div>
+                </label>
             </div>
         </section>
 
         <!-- Output -->
         <section>
-            <h2>Comando Final</h2>
+            <h2>Comando Gerado</h2>
             <div class="output-container">
-                <button class="copy-btn" onclick="copyCommand()">Copiar Comando</button>
+                <div class="output-header">
+                    <div class="output-title">
+                        <i data-lucide="terminal" style="width: 14px; height: 14px;"></i>
+                        Terminal
+                    </div>
+                    <button class="copy-btn" onclick="copyCommand()">
+                        <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
+                        Copiar
+                    </button>
+                </div>
                 <div class="command-display" id="outputCommand">yt-dlp ...</div>
             </div>
         </section>
     </main>
 
-    <footer style="background:#27272a; padding:15px; text-align:center; font-size:0.8rem; color:var(--text-muted); border-top:1px solid var(--border);">
-        Dica: Deixe a opção "ASCII" desmarcada para manter espaços e acentos nos nomes.
+    <footer>
+        <div class="footer-tips">
+            Dica: Mantenha a opção "Compatibilidade" desmarcada para nomes de arquivos originais.
+        </div>
+        <div style="opacity: 0.5;">YT-DLP-GG &copy; 2024</div>
     </footer>
 </div>
 
 <!-- Toast -->
 <div id="toast" class="toast">
+    <i data-lucide="check" style="width: 18px; height: 18px;"></i>
     <span id="toastMsg">Sucesso!</span>
 </div>
 
 <!-- Cookie Help Modal -->
 <div id="cookieModal" class="modal">
     <div class="modal-content">
-        <h3>Como contornar o bloqueio (SARS)</h3>
-        <p>O YouTube agora exige login para muitas conexões de download. Para contornar, você precisa exportar os cookies do seu navegador logado:</p>
-        <ol style="color:var(--text-muted); padding-left:20px; line-height:1.6;">
-            <li>Instale a extensão <strong>"Get cookies.txt LOCALLY"</strong> no Chrome/Firefox.</li>
-            <li>Vá para o YouTube e faça login na conta que você quer usar.</li>
-            <li>Clique no ícone da extensão e em <strong>"Export"</strong> / "Current Domain".</li>
-            <li>Salve o arquivo <strong>cookies.txt</strong> no seu computador.</li>
-            <li>No botão acima ("Clique para selecionar"), escolha esse arquivo.</li>
+        <h3>Como obter cookies?</h3>
+        <p>O YouTube pode bloquear downloads se você não estiver autenticado. Siga os passos:</p>
+        <ol>
+            <li>Instale a extensão <strong>"Get cookies.txt LOCALLY"</strong>.</li>
+            <li>Faça login na sua conta do YouTube.</li>
+            <li>Use a extensão para exportar os cookies do domínio.</li>
+            <li>Salve como <strong>cookies.txt</strong>.</li>
+            <li>Carregue o arquivo aqui no site.</li>
         </ol>
-        <p style="font-size:0.85rem; color:var(--primary);">⚠️ Nunca compartilhe seu arquivo cookies.txt, pois ele dá acesso à sua conta.</p>
-        <button class="btn-primary" style="width:100%; margin-top:10px;" onclick="document.getElementById('cookieModal').style.display='none'">Entendi</button>
+        <p style="padding: 12px; background: rgba(255, 78, 78, 0.1); border-radius: 8px; color: var(--primary); font-size: 0.85rem;">
+            <i data-lucide="alert-triangle" style="width: 14px; height: 14px; vertical-align: middle;"></i>
+            <strong>Segurança:</strong> Nunca compartilhe seus cookies com estranhos.
+        </p>
+        <button class="btn-primary" style="width: 100%; margin-top: 20px;" onclick="closeModal()">Entendi</button>
     </div>
 </div>
 
 <script>
-    // --- CONFIGURAÇÃO DO LINK DE RELEASE ---
-    // ALTERE AQUI PARA O SEU LINK DO GITHUB
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // --- CONFIGURAÇÃO ---
     const GITHUB_RELEASES_URL = "https://github.com/atanycost-png/YT-DLP-GG/releases";
-    
     document.getElementById('releaseLink').href = GITHUB_RELEASES_URL;
-    // --------------------------------------
 
     let currentMode = 'video';
     let cookieFilePath = '';
 
-    // Cookie Handling
+    // Elements
+    const urlInput = document.getElementById('urlInput');
     const cookieInput = document.getElementById('cookieInput');
     const cookieLabel = document.getElementById('cookieLabel');
     const cookieFileName = document.getElementById('cookieFileName');
+    const fileNameInfo = document.getElementById('fileNameInfo');
 
+    // Cookie Handling
     cookieInput.addEventListener('change', function(e) {
         if (this.files && this.files.length > 0) {
             const file = this.files[0];
-            cookieFilePath = `"${file.name}"`; 
-            
+            cookieFilePath = `"${file.name}"`;
+
             cookieLabel.classList.add('active');
-            cookieLabel.textContent = "Arquivo carregado!";
+            cookieLabel.querySelector('span').textContent = "Arquivo selecionado!";
             cookieFileName.textContent = file.name;
-            
+            fileNameInfo.classList.add('show');
+
             showToast(`Cookies de ${file.name} carregados`);
             updateCommand();
         }
@@ -382,23 +810,20 @@
     // Core Logic
     function updateCommand() {
         let cmd = 'yt-dlp';
-        const url = urlInput.value.trim() ? `"${urlInput.value.trim()}"` : '"[URL]"';
+        const urlValue = urlInput.value.trim();
+        const url = urlValue ? `"${urlValue}"` : '"[URL]"';
 
-        // 1. Add Cookies if present
         if (cookieFilePath) {
             cmd += ` --cookies ${cookieFilePath}`;
         }
 
-        // 2. CORREÇÃO DE NOMES
         const restrictFilenames = document.getElementById('restrictFilenames').checked;
-        
         if (!restrictFilenames) {
-            cmd += ' --no-clean-info'; 
+            cmd += ' --no-clean-info';
         } else {
             cmd += ' --restrict-filenames';
         }
 
-        // 3. Add Mode Specific Flags
         if (currentMode === 'video') {
             const qual = document.getElementById('videoQuality').value;
             const fmt = document.getElementById('videoFormat').value;
@@ -412,7 +837,7 @@
             cmd += ` -f "${formatStr}"`;
             if (fmt === 'mp4') cmd += ' --merge-output-format mp4';
             if (fmt === 'mkv') cmd += ' --merge-output-format mkv';
-            
+
             if (subs === 'srt') cmd += ' --write-subs --sub-langs all';
             if (subs === 'embed') cmd += ' --embed-subs';
 
@@ -424,29 +849,35 @@
         } else if (currentMode === 'playlist') {
             const range = document.getElementById('playlistRange').value;
             const fmt = document.getElementById('playlistFormat').value;
-            
+
             if (range === 'first5') cmd += ' --playlist-items 1-5';
             if (fmt === 'mp3') cmd += ' -x --audio-format mp3';
             else cmd += ' -f mp4';
-            
+
             cmd += ' -o "%(playlist_index)s - %(title)s.%(ext)s"';
         }
 
-        // 4. Advanced Flags
         if (document.getElementById('embedMeta').checked) cmd += ' --add-metadata';
-
-        // 5. Output Template
         if (currentMode !== 'playlist') cmd += ' -o "%(title)s.%(ext)s"';
 
         document.getElementById('outputCommand').textContent = cmd + ' ' + url;
     }
 
     // UI Logic
-    function setMode(mode) {
+    function setMode(mode, event) {
         currentMode = mode;
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
-        
+
+        // Se o evento existe, usa o currentTarget, senão tenta encontrar pelo texto (fallback)
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        } else {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => {
+                if (t.textContent.toLowerCase().includes(mode)) t.classList.add('active');
+            });
+        }
+
         ['videoOptions', 'audioOptions', 'playlistOptions'].forEach(id => {
             document.getElementById(id).classList.add('hidden');
         });
@@ -454,13 +885,9 @@
         updateCommand();
     }
 
-    document.getElementById('urlInput').addEventListener('input', updateCommand);
-    document.querySelectorAll('select, input[type=checkbox]').forEach(el => {
-        el.addEventListener('change', updateCommand);
-    });
-
     function copyCommand() {
-        navigator.clipboard.writeText(document.getElementById('outputCommand').textContent).then(() => {
+        const text = document.getElementById('outputCommand').textContent;
+        navigator.clipboard.writeText(text).then(() => {
             showToast('Comando copiado!');
         });
     }
@@ -469,12 +896,44 @@
         const t = document.getElementById('toast');
         document.getElementById('toastMsg').textContent = msg;
         t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 2000);
+        setTimeout(() => t.classList.remove('show'), 3000);
     }
 
     function showCookieHelp() {
         document.getElementById('cookieModal').style.display = 'flex';
     }
+
+    function closeModal() {
+        document.getElementById('cookieModal').style.display = 'none';
+    }
+
+    // Event Listeners
+    urlInput.addEventListener('input', updateCommand);
+    document.querySelectorAll('select, input[type=checkbox]').forEach(el => {
+        el.addEventListener('change', updateCommand);
+    });
+
+    document.getElementById('pasteBtn').addEventListener('click', async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            urlInput.value = text;
+            updateCommand();
+            showToast('Link colado!');
+        } catch (err) {
+            showToast('Erro ao colar');
+        }
+    });
+
+    // Close modal on click outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('cookieModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    // Initial Command
+    updateCommand();
 </script>
 
 </body>
